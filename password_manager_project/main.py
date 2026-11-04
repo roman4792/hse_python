@@ -1,24 +1,40 @@
 import os
 import json
 
-# считываем существующие данные или создаем пустой объект
-FILE_NAME = "passwords.json"
+# структура хранения
+# passwords = {
+#     "apple": {
+#         "login": "roman22@icloud.com",
+#         "password": "qwerty1234"
+#     }
+# }
 
-if os.path.exists(FILE_NAME):
-    with open(FILE_NAME, "r", encoding="utf-8") as f:
-        passwords = json.load(f)
-else:
-    passwords = []
 #########################################################
 
 # авторизация
 
+def unit_master(password):  # создать хэш мастера
+    pass
+
+def unlock(password):
+    pass
 
 #########################################################
 
 
 # логика
 
+def add_entry(name, login, pwd):
+    pass
+
+def list_entries() -> list[str]:
+    pass
+
+def get_entry(name): #-> login/pwd
+    pass
+
+def delete_entry(name):
+    pass
 
 #########################################################
 
@@ -41,11 +57,3 @@ else:
 #         print(passwords)
 # else:
 #     print("неверный пароль")
-
-
-# запись и сохранение данных - иначе изменения не сохранятся
-
-with open(FILE_NAME, "w", encoding="utf-8") as f:
-    json.dump(passwords, f, ensure_ascii=False, indent=4)
-
-#########################################################
