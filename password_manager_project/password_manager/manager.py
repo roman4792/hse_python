@@ -1,13 +1,18 @@
-from storage import JSONStorage
+from .storage import JSONStorage
 
 class PasswordManager:
     def __init__(self):
-        self.master_hash = None
-        self.entries = {}
+        self.auth_storage = JSONStorage("AUTH_FILE_NAME")
+        self.data_storage = JSONStorage("FILE_NAME")
+
+        auth_data = self.auth_storage.load()
+        self.master_hash = auth_data.get("master_hash")
+
+        self.entries = self.data_storage.load()
+
         self.is_unlocked = False
 
     def init_master(self, password: str):
-        # Логика создания мастер-пароля (например, хэширование)
         pass
 
     def unlock(self, password: str) -> bool:
@@ -21,19 +26,22 @@ class PasswordManager:
         self._persist()
 
     def list_entries(self) -> list[str]:
+        if not self.is_unlocked:
+            raise PermissionError("Сначала разблокируйте менеджер!")
         return list(self.entries.keys())
 
     def get_entry(self, name: str):
+        if not self.is_unlocked:
+            raise PermissionError("Сначала разблокируйте менеджер!")
         return self.entries.get(name)
 
-    def delete_entry(self, name: str):
+    def delete_entry(self, name: str) -> None:
+        if not self.is_unlocked:
+            raise PermissionError("Сначала разблокируйте менеджер!")
+
         if name in self.entries:
             del self.entries[name]
             self._persist()
 
-    def _persist(self):
-        # Вызываем функцию сохранения из соседнего модуля
-        save_to_json(self.entries)
-
-    def _load(self):
-        self.entries = load_from_json()
+    def _persist(self) -> None:
+        self.data_storage.save(self.entries)

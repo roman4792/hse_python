@@ -9,13 +9,13 @@ ENV_PATH = BASE_DIR / ".env"
 load_dotenv(dotenv_path=ENV_PATH)
 
 class JSONStorage:
-    def __init__(self):
-        env_filename = os.getenv("FILE_NAME")
+    def __init__(self, env_key: str):
+        env_filename = os.getenv(env_key)
 
         if not env_filename:
             raise KeyError(
-                "ошибка конфигурации: переменная окружения 'FILE_NAME' не задана в .env файле"
-                "добавьте в .env строку вида FILE_NAME=your_file.json"
+                f"ошибка конфигурации: переменная окружения {env_key} не задана в .env файле"
+                f"добавьте в .env строку вида {env_key}=your_file.json"
             )
 
         self.filename = BASE_DIR / env_filename
@@ -27,8 +27,8 @@ class JSONStorage:
         except FileNotFoundError:
             return {}
         except Exception as e:
-            print(f"Не удалось прочитать файл базы данных: {e}")
-            return {}
+            print(f"КРИТИЧЕСКАЯ ОШИБКА: Не удалось прочитать файл базы данных: {e}")
+            return None
 
     def save(self, data: dict) -> None:
         try:
