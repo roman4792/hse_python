@@ -1,6 +1,8 @@
+from __future__ import annotations
 import hashlib
 import os
 from .storage import JSONStorage
+
 
 class PasswordManager:
     def __init__(self):
