@@ -1,3 +1,5 @@
+import hashlib
+import os
 from .storage import JSONStorage
 
 class PasswordManager:
@@ -7,17 +9,34 @@ class PasswordManager:
 
         auth_data = self.auth_storage.load()
         self.master_hash = auth_data.get("master_hash")
+        self.master_salt = auth_data.get("salt")
 
         self.entries = self.data_storage.load()
 
         self.is_unlocked = False
 
-    def init_master(self, password: str):
-        pass
+    def init_master(self, password: str) -> None:
+        if self.master_hash is not None:
+            raise PermissionError("Мастер-пароль уже создан!")
+
+        salt = os.urandom(16)
+        hash_bytes = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 200000)
+
+        self.master_salt = salt.hex()
+        self.master_hash = hash_bytes.hex()
+        self.auth_storage.save({"master_hash": self.master_hash, "salt": self.master_salt})
 
     def unlock(self, password: str) -> bool:
-        # Проверка пароля
-        return True
+        if self.master_hash is None:
+            return False
+
+        salt = bytes.fromhex(self.master_salt)
+        check = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 200000).hex()
+
+        if check == self.master_hash:
+            self.is_unlocked = True
+            return True
+        return False
 
     def add_entry(self, name: str, login: str, pwd: str):
         if not self.is_unlocked:
