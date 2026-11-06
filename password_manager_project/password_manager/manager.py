@@ -4,6 +4,9 @@ import hashlib
 import os
 from cryptography.fernet import Fernet
 from .storage import JSONStorage
+import random
+import secrets
+import string
 
 
 class PasswordManager:
@@ -89,3 +92,23 @@ class PasswordManager:
 
     def _persist(self) -> None:
         self.data_storage.save(self.entries)
+
+def generate_password(length: int = 16) -> str:
+    if length < 4:
+        raise ValueError("Длина пароля должна быть не меньше 4")
+
+    groups = [
+        string.ascii_lowercase,
+        string.ascii_uppercase,
+        string.digits,
+        string.punctuation,
+    ]
+
+    chars = [secrets.choice(group) for group in groups]
+
+    all_chars = "".join(groups)
+    while len(chars) < length:
+        chars.append(secrets.choice(all_chars))
+
+    random.SystemRandom().shuffle(chars)
+    return "".join(chars)
