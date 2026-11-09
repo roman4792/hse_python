@@ -6,24 +6,27 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: password_manager_project
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
+        with:
+          project-root: "password_manager_project"
 
       - name: Install dependencies
+        working-directory: password_manager_project
         run: uv sync --locked
 
       - name: Run tests
+        working-directory: password_manager_project
         run: uv run pytest
 
       - name: Ruff check
+        working-directory: password_manager_project
         run: uv run ruff check .
 
       - name: Ruff format
+        working-directory: password_manager_project
         run: uv run ruff format --check .
