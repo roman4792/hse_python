@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+from typing import Any
 
 from dotenv import load_dotenv
 
@@ -13,7 +14,7 @@ load_dotenv(dotenv_path=ENV_PATH)
 
 
 class JSONStorage:
-    def __init__(self, env_key: str):
+    def __init__(self, env_key: str) -> None:
         env_filename = os.getenv(env_key)
 
         if not env_filename:
@@ -24,7 +25,7 @@ class JSONStorage:
 
         self.filename = BASE_DIR / env_filename
 
-    def load(self) -> dict:
+    def load(self) -> dict[str, Any] | None:
         try:
             with open(self.filename, "r", encoding="utf-8") as f:
                 return json.load(f)
@@ -34,7 +35,7 @@ class JSONStorage:
             print(f"КРИТИЧЕСКАЯ ОШИБКА: Не удалось прочитать файл базы данных: {e}")
             return None
 
-    def save(self, data: dict) -> None:
+    def save(self, data: dict[str, Any]) -> None:
         try:
             with open(self.filename, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=4)

@@ -13,19 +13,27 @@ from .storage import JSONStorage
 
 
 class PasswordManager:
-    def __init__(self):
+    def __init__(self) -> None:
         self.auth_storage = JSONStorage("AUTH_FILE_NAME")
         self.data_storage = JSONStorage("FILE_NAME")
 
+        self.master_hash: str | None = None
+        self.master_salt: str | None = None
+        self.enc_salt: str | None = None
+        self.fernet: Fernet | None = None
+        self.entries: dict[str, dict[str, str]] = {}
+
+        self._load()
+
+        self.is_unlocked = False
+
+    def _load(self) -> None:
         auth_data = self.auth_storage.load()
         self.master_hash = auth_data.get("master_hash")
         self.master_salt = auth_data.get("salt")
         self.enc_salt = auth_data.get("enc_salt")
-        self.fernet = None
 
         self.entries = self.data_storage.load()
-
-        self.is_unlocked = False
 
     def _make_fernet(self, password: str) -> Fernet:
         salt = bytes.fromhex(self.enc_salt)
@@ -63,7 +71,7 @@ class PasswordManager:
             return True
         return False
 
-    def add_entry(self, name: str, login: str, pwd: str):
+    def add_entry(self, name: str, login: str, pwd: str) -> None:
         if not self.is_unlocked:
             raise PermissionError("Сначала разблокируйте менеджер!")
 
@@ -76,7 +84,7 @@ class PasswordManager:
             raise PermissionError("Сначала разблокируйте менеджер!")
         return list(self.entries.keys())
 
-    def get_entry(self, name: str):
+    def get_entry(self, name: str) -> dict[str, str] | None:
         if not self.is_unlocked:
             raise PermissionError("Сначала разблокируйте менеджер!")
 
