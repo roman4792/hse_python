@@ -30,3 +30,9 @@ jobs:
       - name: Ruff format
         working-directory: password_manager_project
         run: uv run ruff format --check .
+
+      - name: Mypy
+        working-directory: password_manager_project
+        run: |
+          uv run mypy --strict password_manager tests
+          uv run mypy --strict --follow-imports=skip password_manager.py

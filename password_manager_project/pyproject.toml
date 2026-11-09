@@ -1,7 +1,7 @@
 [project]
 name = "password-manager-project"
 version = "0.1.0"
-description = "Add your description here"
+description = "Консольный менеджер паролей"
 readme = "README.md"
 authors = [
     { name = "roman-rrrr", email = "golromev@icloud.com" }
@@ -12,8 +12,8 @@ dependencies = [
     "python-dotenv>=1.0.1",
 ]
 
-[project.scripts]
-password-manager-project = "password_manager_project:main"
+[tool.uv]
+package = false
 
 [build-system]
 requires = ["uv_build>=0.13.7,<0.14.0"]
@@ -25,3 +25,7 @@ dev = [
     "pytest>=8.3.5",
     "ruff>=0.17.4",
 ]
+
+[tool.mypy]
+python_version = "3.8"
+explicit_package_bases = true
