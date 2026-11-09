@@ -1,0 +1,27 @@
+[project]
+name = "password-manager-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "roman-rrrr", email = "golromev@icloud.com" }
+]
+requires-python = ">=3.8"
+dependencies = [
+    "cryptography>=47.0.0",
+    "python-dotenv>=1.0.1",
+]
+
+[project.scripts]
+password-manager-project = "password_manager_project:main"
+
+[build-system]
+requires = ["uv_build>=0.13.7,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.14.1",
+    "pytest>=8.3.5",
+    "ruff>=0.17.4",
+]
