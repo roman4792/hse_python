@@ -103,7 +103,11 @@ def main() -> None:
     parser.add_argument("--init", action="store_true", help="создать мастер-пароль")
     parser.add_argument("--unlock", action="store_true", help="войти в менеджер")
     parser.add_argument(
-        "--generate", nargs="?", const=16, type=int, metavar="LEN",
+        "--generate",
+        nargs="?",
+        const=16,
+        type=int,
+        metavar="LEN",
         help="сгенерировать пароль (длина по умолчанию 16)",
     )
     args = parser.parse_args()

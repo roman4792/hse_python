@@ -1,12 +1,15 @@
 from __future__ import annotations
+
 import base64
 import hashlib
 import os
-from cryptography.fernet import Fernet
-from .storage import JSONStorage
 import random
 import secrets
 import string
+
+from cryptography.fernet import Fernet
+
+from .storage import JSONStorage
 
 
 class PasswordManager:
@@ -39,11 +42,13 @@ class PasswordManager:
         self.master_salt = salt.hex()
         self.master_hash = hash_bytes.hex()
         self.enc_salt = os.urandom(16).hex()
-        self.auth_storage.save({
-            "master_hash": self.master_hash,
-            "salt": self.master_salt,
-            "enc_salt": self.enc_salt,
-        })
+        self.auth_storage.save(
+            {
+                "master_hash": self.master_hash,
+                "salt": self.master_salt,
+                "enc_salt": self.enc_salt,
+            }
+        )
 
     def unlock(self, password: str) -> bool:
         if self.master_hash is None:
@@ -92,6 +97,7 @@ class PasswordManager:
 
     def _persist(self) -> None:
         self.data_storage.save(self.entries)
+
 
 def generate_password(length: int = 16) -> str:
     if length < 4:
